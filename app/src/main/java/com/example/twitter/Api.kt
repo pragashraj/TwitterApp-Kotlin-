@@ -6,9 +6,6 @@ import retrofit2.http.Body
 
 interface Api {
     
-  /*  @POST("register")
-    fun signUpInfo(@Body newUser: NewUser)
-
-   */
-
+    @POST("register")
+    fun signUpInfo(@Body newUser: NewUser):Call<Response>
 }

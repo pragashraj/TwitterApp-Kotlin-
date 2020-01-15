@@ -15,10 +15,14 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_up)
         email_editText=findViewById(R.id.emailEt)as EditText
         password_editText=findViewById(R.id.passwordEt)as EditText
+        // Toast.makeText(this,"btn clicked",Toast.LENGTH_SHORT).show();
     }
 
     fun onSignUpBtnClick(v: View)
     {
-       // Toast.makeText(this,"btn clicked",Toast.LENGTH_SHORT).show();
+        var email=email_editText.text.toString()
+        var password=password_editText.text.toString()
+        var newUser=NewUser(email,password)
+
     }
 }
