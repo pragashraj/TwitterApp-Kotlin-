@@ -35,7 +35,17 @@ class ProfilePicActivity : AppCompatActivity() {
 
     fun onNextBtnClick(v:View)
     {
-
+        val builder=AlertDialog.Builder(this)
+        builder.setTitle("Alert!!!")
+        builder.setMessage("Are you sure about your Profile Picture?")
+        builder.setPositiveButton("Yes",{dialogInterface, i ->
+            var intent=Intent(this,MainActivity::class.java)
+            startActivity(intent)
+        })
+        builder.setNegativeButton("No",{dialogInterface, i ->
+            dialogInterface.cancel()
+        })
+        builder.show()
     }
 
     fun openDialog()
