@@ -10,9 +10,13 @@ import androidx.appcompat.app.AlertDialog
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.new_tweet.view.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var myTweet:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,6 +31,14 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
             dialogView.send.setOnClickListener {
                 Toast.makeText(this,"send btn",Toast.LENGTH_SHORT).show()
+                myTweet=dialogView.myTweetText.text.toString()
+                if(myTweet.length>0)
+                {
+                    sendMyTweet(myTweet)
+                }else{
+                    Toast.makeText(this,"No Tweets available",Toast.LENGTH_SHORT).show()
+                }
+
             }
             dialogView.attachment.setOnClickListener {
                 Toast.makeText(this,"attachment btn",Toast.LENGTH_SHORT).show()
@@ -47,4 +59,24 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    fun myDetails()
+    {
+        ApiClient.instance.getMyDetails()
+            .enqueue(object : Callback<NewUser>{
+                override fun onFailure(call: Call<NewUser>, t: Throwable) {
+
+                }
+
+                override fun onResponse(call: Call<NewUser>, response: Response<NewUser>) {
+
+                }
+
+            })
+    }
+
+
+    fun sendMyTweet(tweetText:String)
+    {
+
+    }
 }

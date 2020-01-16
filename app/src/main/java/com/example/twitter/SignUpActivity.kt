@@ -39,6 +39,7 @@ class SignUpActivity : AppCompatActivity() {
                     if(!response.isSuccessful){
                         Toast.makeText(this@SignUpActivity,"Sign Up is Not Success",Toast.LENGTH_SHORT).show()
                     }else{
+                        Toast.makeText(this@SignUpActivity,"Sign Up is  Success",Toast.LENGTH_SHORT).show()
                         email_editText.setText("")
                         password_editText.setText("")
                         startProfileActivity()
@@ -46,6 +47,11 @@ class SignUpActivity : AppCompatActivity() {
                 }
 
             })
+
+            Toast.makeText(this@SignUpActivity,"Sign Up is  Success",Toast.LENGTH_SHORT).show()
+            email_editText.setText("")
+            password_editText.setText("")
+            startProfileActivity()
     }
 
     fun splitEmail(emailString: String):String
@@ -57,7 +63,7 @@ class SignUpActivity : AppCompatActivity() {
     fun startProfileActivity()
     {
         var intent=Intent(this,ProfilePicActivity::class.java)
-        intent.putExtra("mail",email)
+        intent.putExtra("username",splitEmail(email))
         startActivity(intent)
     }
 }

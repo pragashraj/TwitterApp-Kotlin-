@@ -28,13 +28,13 @@ class ProfilePicActivity : AppCompatActivity() {
     var CAMERA_REQUEST_CODE=2
     var GALLERY_CODE=3
     var CAMERA_CODE=4
-    lateinit var userEmail:String
+    lateinit var username:String
     private val selectOptions = arrayOf<CharSequence>("Select photo", "Capture a photo", "Cancel")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_pic)
         var bundle=intent.extras
-        userEmail= bundle!!.getString("mail").toString()
+        username= bundle!!.getString("username").toString()
     }
 
     fun onChooseBtnClick(v:View)
@@ -85,8 +85,8 @@ class ProfilePicActivity : AppCompatActivity() {
             {
                 requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),CAMERA_REQUEST_CODE)
             }
-            openDialog()
         }
+        openDialog()
     }
 
     fun loadGallery()
@@ -121,18 +121,16 @@ class ProfilePicActivity : AppCompatActivity() {
     fun upload(file: File)
     {
         val filepart = MultipartBody.Part.createFormData("image", file.name, RequestBody.create(MediaType.parse("image/*"), file))
-        ApiClient.instance.sendImage(filepart)
+        ApiClient.instance.sendImage(filepart,username)
             .enqueue(object:retrofit2.Callback<Response>{
                 override fun onFailure(call: Call<Response>, t: Throwable) {
-                    
+
                 }
 
                 override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
                     if(!response.isSuccessful)
                     {
                         Toast.makeText(this@ProfilePicActivity,"Not Success",Toast.LENGTH_SHORT).show()
-                    }else{
-
                     }
                 }
 
