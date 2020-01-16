@@ -1,16 +1,10 @@
 package com.example.twitter
 
-import retrofit2.http.POST
+import okhttp3.MultipartBody
 import retrofit2.Call;
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
+import retrofit2.http.*
 
 interface Api {
-    
-    @POST("register")
-    fun signUpInfo(@Body newUser: NewUser):Call<Response>
-
     @FormUrlEncoded
     @POST("register")
     fun signUp(
@@ -18,4 +12,9 @@ interface Api {
         @Field("password") password:String,
         @Field("username") username:String
     ):Call<Response>
+
+
+    @Multipart
+    @POST("postImage")
+    fun sendImage(@Part filePart: MultipartBody.Part):Call<Response>
 }

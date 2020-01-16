@@ -1,5 +1,6 @@
 package com.example.twitter
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -14,6 +15,8 @@ class SignUpActivity : AppCompatActivity() {
 
     lateinit var email_editText:EditText
     lateinit var password_editText:EditText
+    lateinit var email:String
+    lateinit var password:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
@@ -24,9 +27,8 @@ class SignUpActivity : AppCompatActivity() {
 
     fun onSignUpBtnClick(v: View)
     {
-        var email=email_editText.text.toString()
-        var password=password_editText.text.toString()
-        var newUser=NewUser(email,password,splitEmail(email))
+        email=email_editText.text.toString()
+        password=password_editText.text.toString()
         ApiClient.instance.signUp(email,password,splitEmail(email))
             .enqueue(object:Callback<Response>{
                 override fun onFailure(call: Call<Response>, t: Throwable) {
@@ -35,9 +37,11 @@ class SignUpActivity : AppCompatActivity() {
 
                 override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
                     if(!response.isSuccessful){
-                        Toast.makeText(this@SignUpActivity,"not Success",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SignUpActivity,"Sign Up is Not Success",Toast.LENGTH_SHORT).show()
                     }else{
-                        Toast.makeText(this@SignUpActivity,"btn clicked",Toast.LENGTH_SHORT).show()
+                        email_editText.setText("")
+                        password_editText.setText("")
+                        startProfileActivity()
                     }
                 }
 
@@ -48,5 +52,12 @@ class SignUpActivity : AppCompatActivity() {
     {
         var mail=emailString.split("@")
         return mail[0]
+    }
+
+    fun startProfileActivity()
+    {
+        var intent=Intent(this,ProfilePicActivity::class.java)
+        intent.putExtra("mail",email)
+        startActivity(intent)
     }
 }

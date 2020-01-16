@@ -14,6 +14,12 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_profile_pic.*
+import okhttp3.Callback
+import okhttp3.MediaType
+import java.io.File
+import okhttp3.RequestBody
+import okhttp3.MultipartBody
+import retrofit2.Call
 
 
 class ProfilePicActivity : AppCompatActivity() {
@@ -22,10 +28,13 @@ class ProfilePicActivity : AppCompatActivity() {
     var CAMERA_REQUEST_CODE=2
     var GALLERY_CODE=3
     var CAMERA_CODE=4
+    lateinit var userEmail:String
     private val selectOptions = arrayOf<CharSequence>("Select photo", "Capture a photo", "Cancel")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_pic)
+        var bundle=intent.extras
+        userEmail= bundle!!.getString("mail").toString()
     }
 
     fun onChooseBtnClick(v:View)
@@ -104,7 +113,30 @@ class ProfilePicActivity : AppCompatActivity() {
             val path=cursor.getString(index)
             cursor.close()
             profile_image.setImageBitmap(BitmapFactory.decodeFile(path))
+            val destinationFile = File(path)
+            upload(destinationFile)
         }
+    }
+
+    fun upload(file: File)
+    {
+        val filepart = MultipartBody.Part.createFormData("image", file.name, RequestBody.create(MediaType.parse("image/*"), file))
+        ApiClient.instance.sendImage(filepart)
+            .enqueue(object:retrofit2.Callback<Response>{
+                override fun onFailure(call: Call<Response>, t: Throwable) {
+                    
+                }
+
+                override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                    if(!response.isSuccessful)
+                    {
+                        Toast.makeText(this@ProfilePicActivity,"Not Success",Toast.LENGTH_SHORT).show()
+                    }else{
+
+                    }
+                }
+
+            })
     }
 
 
