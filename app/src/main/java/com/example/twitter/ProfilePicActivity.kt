@@ -49,6 +49,7 @@ class ProfilePicActivity : AppCompatActivity() {
         builder.setMessage("Are you sure about your Profile Picture?")
         builder.setPositiveButton("Yes",{dialogInterface, i ->
             var intent=Intent(this,MainActivity::class.java)
+            intent.putExtra("name",username)
             startActivity(intent)
         })
         builder.setNegativeButton("No",{dialogInterface, i ->
