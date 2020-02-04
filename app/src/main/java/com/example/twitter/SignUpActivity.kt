@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_sign_up.view.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -66,4 +67,7 @@ class SignUpActivity : AppCompatActivity() {
         intent.putExtra("username",splitEmail(email))
         startActivity(intent)
     }
+
+
+
 }

@@ -25,21 +25,21 @@ class MainActivity : AppCompatActivity() {
     var listOfTweets=ArrayList<Tweet>()
     lateinit var listV:ListView
     var adapter:TweetAdapter?=null
+    lateinit var myPreference: MyPreference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         listV=findViewById(R.id.listView)as ListView
+        myPreference= MyPreference(this)
 
-       /* var bundle=intent.extras
-        userName=bundle!!.getString("name").toString()
-
-        */
-
-        listOfTweets.add(Tweet("","user1","First Tweet",""))
+       /* listOfTweets.add(Tweet("","user1","First Tweet",""))
         listOfTweets.add(Tweet("","user2","Second Tweet",""))
         adapter=TweetAdapter(this,listOfTweets)
         listV.adapter=adapter
+        */
+
+        
 
         userName="raj"
         fab.setOnClickListener { view ->
@@ -50,11 +50,11 @@ class MainActivity : AppCompatActivity() {
             val dialog=builder.create()
             dialog.show()
             dialogView.send.setOnClickListener {
-                Toast.makeText(this,"send btn",Toast.LENGTH_SHORT).show()
-                //myTweet=dialogView.myTweetText.text.toString()
-                if(1>0)
+                myTweet=dialogView.myTweetText.text.toString()
+                if(myTweet.length>0)
                 {
-                    sendMyTweet("tweet try")
+                   // sendMyTweet("tweet try")
+                    Toast.makeText(this,myTweet,Toast.LENGTH_SHORT).show()
                     dialog.cancel()
                 }else{
                     Toast.makeText(this,"No Tweets available",Toast.LENGTH_SHORT).show()
