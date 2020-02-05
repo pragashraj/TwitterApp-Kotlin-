@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     var listOfTweets=ArrayList<Tweet>()
     lateinit var listV:ListView
     var adapter:TweetAdapter?=null
+    lateinit var username:String
     lateinit var myPreference: MyPreference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         listV=findViewById(R.id.listView)as ListView
         myPreference= MyPreference(this)
+        userName=myPreference.getUserName()
 
        /* listOfTweets.add(Tweet("","user1","First Tweet",""))
         listOfTweets.add(Tweet("","user2","Second Tweet",""))
@@ -39,9 +41,6 @@ class MainActivity : AppCompatActivity() {
         listV.adapter=adapter
         */
 
-        
-
-        userName="raj"
         fab.setOnClickListener { view ->
             var builder= AlertDialog.Builder(this)
             val dialogView=layoutInflater.inflate(R.layout.new_tweet,null)
@@ -53,8 +52,6 @@ class MainActivity : AppCompatActivity() {
                 myTweet=dialogView.myTweetText.text.toString()
                 if(myTweet.length>0)
                 {
-                   // sendMyTweet("tweet try")
-                    Toast.makeText(this,myTweet,Toast.LENGTH_SHORT).show()
                     dialog.cancel()
                 }else{
                     Toast.makeText(this,"No Tweets available",Toast.LENGTH_SHORT).show()
@@ -80,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun myDetails()
+    fun myDetails()//Api
     {
         ApiClient.instance.getMyDetails()
             .enqueue(object : Callback<NewUser>{
@@ -96,7 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun sendMyTweet(tweetText:String)
+    fun sendMyTweet(tweetText:String)//Api
     {
         ApiClient.instance.saveTweet(userName,"",tweetText,"")
             .enqueue(object:Callback<com.example.twitter.Response>{
@@ -109,6 +106,23 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+
+    fun sendTweet(tweet: Tweet){
+
+        ApiClient.instance.sendTweet(tweet)
+            .enqueue(object :Callback<Tweet>{
+                override fun onFailure(call: Call<Tweet>, t: Throwable) {
+
+                }
+
+                override fun onResponse(call: Call<Tweet>, response: Response<Tweet>) {
+
+                }
+
+            })
+
     }
 
 

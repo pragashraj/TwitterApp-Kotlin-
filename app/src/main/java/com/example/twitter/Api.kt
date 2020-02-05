@@ -14,6 +14,8 @@ interface Api {
         @Field("username") username:String
     ):Call<Response>
 
+    @POST("signUp")
+    fun Regeister(@Body newUser: NewUser):Call<NewUser>
 
     @Multipart
     @POST("postImage")
@@ -32,5 +34,9 @@ interface Api {
         @Field("usertweet") usertweet:String,
         @Field("attachmentpath") attachmentpath:String
     ):Call<Response>
+
+
+    @POST("posttweet")
+    fun sendTweet(@Body tweet: Tweet):Call<Tweet>
 
 }

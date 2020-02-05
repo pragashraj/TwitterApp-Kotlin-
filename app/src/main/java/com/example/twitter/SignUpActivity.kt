@@ -18,41 +18,58 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var password_editText:EditText
     lateinit var email:String
     lateinit var password:String
+    lateinit var myPreference: MyPreference
+    var ISLOGGED:Boolean?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         email_editText=findViewById(R.id.emailEt)as EditText
         password_editText=findViewById(R.id.passwordEt)as EditText
-        // Toast.makeText(this,"btn clicked",Toast.LENGTH_SHORT).show()
+        myPreference= MyPreference(this)
+        ISLOGGED=myPreference.getIsLogged()
+
+        if(ISLOGGED as Boolean){
+            var intent=Intent(this,MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun onSignUpBtnClick(v: View)
     {
         email=email_editText.text.toString()
         password=password_editText.text.toString()
-        ApiClient.instance.signUp(email,password,splitEmail(email))
-            .enqueue(object:Callback<Response>{
-                override fun onFailure(call: Call<Response>, t: Throwable) {
 
-                }
+        if(email.length>0 && password.length>0) {
 
-                override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                    if(!response.isSuccessful){
-                        Toast.makeText(this@SignUpActivity,"Sign Up is Not Success",Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(this@SignUpActivity,"Sign Up is  Success",Toast.LENGTH_SHORT).show()
-                        email_editText.setText("")
-                        password_editText.setText("")
-                        startProfileActivity()
+            ApiClient.instance.signUp(email, password, splitEmail(email))
+                .enqueue(object : Callback<Response> {
+                    override fun onFailure(call: Call<Response>, t: Throwable) {
+                        Toast.makeText(this@SignUpActivity, "Failure to connect", Toast.LENGTH_SHORT).show()
                     }
-                }
 
-            })
+                    override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                        if (!response.isSuccessful) {
+                            Toast.makeText(this@SignUpActivity, "Sign Up is Not Success", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@SignUpActivity, "Sign Up is  Success", Toast.LENGTH_SHORT).show()
+                            email_editText.setText("")
+                            password_editText.setText("")
+                            myPreference.setIsLogged(true)
+                            myPreference.setUserName(splitEmail(email))
+                            startProfileActivity()
+                        }
+                    }
 
-            Toast.makeText(this@SignUpActivity,"Sign Up is  Success",Toast.LENGTH_SHORT).show()
+                })
+
+            /*Toast.makeText(this@SignUpActivity, "Sign Up is  Success", Toast.LENGTH_SHORT).show()
             email_editText.setText("")
             password_editText.setText("")
             startProfileActivity()
+
+             */
+
+        }
     }
 
     fun splitEmail(emailString: String):String

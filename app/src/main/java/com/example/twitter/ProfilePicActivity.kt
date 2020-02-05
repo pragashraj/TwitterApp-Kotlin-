@@ -25,11 +25,11 @@ import retrofit2.Call
 class ProfilePicActivity : AppCompatActivity() {
 
     var GALLERY_REQUEST_CODE=1
-    var CAMERA_REQUEST_CODE=2
+   // var CAMERA_REQUEST_CODE=2
     var GALLERY_CODE=3
-    var CAMERA_CODE=4
+   // var CAMERA_CODE=4
     lateinit var username:String
-    private val selectOptions = arrayOf<CharSequence>("Select photo", "Capture a photo", "Cancel")
+    private val selectOptions = arrayOf<CharSequence>("Select photo", "Cancel")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_pic)
@@ -49,7 +49,6 @@ class ProfilePicActivity : AppCompatActivity() {
         builder.setMessage("Are you sure about your Profile Picture?")
         builder.setPositiveButton("Yes",{dialogInterface, i ->
             var intent=Intent(this,MainActivity::class.java)
-            intent.putExtra("name",username)
             startActivity(intent)
         })
         builder.setNegativeButton("No",{dialogInterface, i ->
@@ -65,8 +64,7 @@ class ProfilePicActivity : AppCompatActivity() {
             DialogInterface.OnClickListener { dialog, position ->
                 when (position) {
                     0 -> loadGallery()
-                    1 -> loadcamera()
-                    2 -> dialog.dismiss()
+                    1 -> dialog.dismiss()
                     else -> dialog.dismiss()
                 }
             })
@@ -82,10 +80,12 @@ class ProfilePicActivity : AppCompatActivity() {
             {
                 requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),GALLERY_REQUEST_CODE)
             }
-            if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED)
+           /* if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED)
             {
                 requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),CAMERA_REQUEST_CODE)
             }
+
+            */
         }
         openDialog()
     }
@@ -94,13 +94,8 @@ class ProfilePicActivity : AppCompatActivity() {
     {
         var intent=Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent,GALLERY_CODE)
-
     }
 
-    fun loadcamera()
-    {
-        Toast.makeText(this,"camera",Toast.LENGTH_SHORT).show();
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -117,6 +112,7 @@ class ProfilePicActivity : AppCompatActivity() {
             val destinationFile = File(path)
             upload(destinationFile)
         }
+
     }
 
     fun upload(file: File)
@@ -132,6 +128,8 @@ class ProfilePicActivity : AppCompatActivity() {
                     if(!response.isSuccessful)
                     {
                         Toast.makeText(this@ProfilePicActivity,"Not Success",Toast.LENGTH_SHORT).show()
+                    }else{
+
                     }
                 }
 
