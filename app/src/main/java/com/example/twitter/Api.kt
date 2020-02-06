@@ -6,16 +6,8 @@ import retrofit2.Call;
 import retrofit2.http.*
 
 interface Api {
-    @FormUrlEncoded
     @POST("register")
-    fun signUp(
-        @Field("email") email:String,
-        @Field("password") password:String,
-        @Field("username") username:String
-    ):Call<Response>
-
-    @POST("signUp")
-    fun Regeister(@Body newUser: NewUser):Call<NewUser>
+    fun Regeister(@Body newUser: NewUser):Call<Void>
 
     @Multipart
     @POST("postImage")

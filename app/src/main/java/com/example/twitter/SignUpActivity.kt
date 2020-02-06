@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_sign_up.view.*
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 
 
 class SignUpActivity : AppCompatActivity() {
@@ -40,34 +41,24 @@ class SignUpActivity : AppCompatActivity() {
         password=password_editText.text.toString()
 
         if(email.length>0 && password.length>0) {
-
-            ApiClient.instance.signUp(email, password, splitEmail(email))
-                .enqueue(object : Callback<Response> {
-                    override fun onFailure(call: Call<Response>, t: Throwable) {
-                        Toast.makeText(this@SignUpActivity, "Failure to connect", Toast.LENGTH_SHORT).show()
+            var user=NewUser(email,password,splitEmail(email))
+            ApiClient.instance.Regeister(user)
+                .enqueue(object:Callback<Void>{
+                    override fun onFailure(call: Call<Void>, t: Throwable) {
+                        Toast.makeText(this@SignUpActivity, t.message.toString(), Toast.LENGTH_SHORT).show()
                     }
 
-                    override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                        if (!response.isSuccessful) {
-                            Toast.makeText(this@SignUpActivity, "Sign Up is Not Success", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(this@SignUpActivity, "Sign Up is  Success", Toast.LENGTH_SHORT).show()
-                            email_editText.setText("")
-                            password_editText.setText("")
-                            myPreference.setIsLogged(true)
-                            myPreference.setUserName(splitEmail(email))
-                            startProfileActivity()
-                        }
+                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                        Toast.makeText(this@SignUpActivity, "Sign Up is  Success", Toast.LENGTH_SHORT).show()
+                        email_editText.setText("")
+                        password_editText.setText("")
+                        myPreference.setIsLogged(true)
+                        myPreference.setUserName(splitEmail(email))
+                        startProfileActivity()
                     }
 
                 })
 
-            /*Toast.makeText(this@SignUpActivity, "Sign Up is  Success", Toast.LENGTH_SHORT).show()
-            email_editText.setText("")
-            password_editText.setText("")
-            startProfileActivity()
-
-             */
 
         }
     }
