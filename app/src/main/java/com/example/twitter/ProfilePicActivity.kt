@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -29,12 +30,15 @@ class ProfilePicActivity : AppCompatActivity() {
     var GALLERY_CODE=3
    // var CAMERA_CODE=4
     lateinit var username:String
+    lateinit var  destinationFile:File
     private val selectOptions = arrayOf<CharSequence>("Select photo", "Cancel")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_pic)
         var bundle=intent.extras
         username= bundle!!.getString("username").toString()
+        //var uri:Uri=
+        //destinationFile= File(uri)
     }
 
     fun onChooseBtnClick(v:View)
@@ -48,6 +52,7 @@ class ProfilePicActivity : AppCompatActivity() {
         builder.setTitle("Alert!!!")
         builder.setMessage("Are you sure about your Profile Picture?")
         builder.setPositiveButton("Yes",{dialogInterface, i ->
+            upload(destinationFile)
             var intent=Intent(this,MainActivity::class.java)
             startActivity(intent)
         })
@@ -109,8 +114,8 @@ class ProfilePicActivity : AppCompatActivity() {
             val path=cursor.getString(index)
             cursor.close()
             profile_image.setImageBitmap(BitmapFactory.decodeFile(path))
-            val destinationFile = File(path)
-            upload(destinationFile)
+            destinationFile = File(path)
+
         }
 
     }
@@ -119,17 +124,17 @@ class ProfilePicActivity : AppCompatActivity() {
     {
         val filepart = MultipartBody.Part.createFormData("image", file.name, RequestBody.create(MediaType.parse("image/*"), file))
         ApiClient.instance.sendImage(filepart,username)
-            .enqueue(object:retrofit2.Callback<Response>{
-                override fun onFailure(call: Call<Response>, t: Throwable) {
-
+            .enqueue(object:retrofit2.Callback<Void>{
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Toast.makeText(this@ProfilePicActivity,"Failure to Upload Picture",Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                override fun onResponse(call: Call<Void>, response: retrofit2.Response<Void>) {
                     if(!response.isSuccessful)
                     {
-                        Toast.makeText(this@ProfilePicActivity,"Not Success",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ProfilePicActivity,"Failure to Response",Toast.LENGTH_SHORT).show()
                     }else{
-
+                        Toast.makeText(this@ProfilePicActivity,"Upload success",Toast.LENGTH_SHORT).show()
                     }
                 }
 

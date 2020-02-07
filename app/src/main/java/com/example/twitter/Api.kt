@@ -11,7 +11,7 @@ interface Api {
 
     @Multipart
     @POST("postImage")
-    fun sendImage(@Part filePart: MultipartBody.Part, @Part("name") name: String):Call<Response>
+    fun sendImage(@Part filePart: MultipartBody.Part, @Part("name") name: String):Call<Void>
 
 
     @GET("getDetails")
