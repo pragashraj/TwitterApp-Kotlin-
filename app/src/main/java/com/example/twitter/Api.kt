@@ -13,22 +13,13 @@ interface Api {
     @POST("postImage")
     fun sendImage(@Part filePart: MultipartBody.Part, @Part("name") name: String):Call<Void>
 
+    @GET("getPicture")
+    fun getProfilePic(@Query("name")username: String):Call<Response>
 
     @GET("getDetails")
     fun getMyDetails():Call<NewUser>
 
-
-    @FormUrlEncoded
-    @POST("postTweet")
-    fun saveTweet(
-        @Field("username") username:String,
-        @Field("imagepath") imagepath:String,
-        @Field("usertweet") usertweet:String,
-        @Field("attachmentpath") attachmentpath:String
-    ):Call<Response>
-
-
     @POST("posttweet")
-    fun sendTweet(@Body tweet: Tweet):Call<Tweet>
+    fun sendTweet(@Body tweet: Tweet):Call<Void>
 
 }

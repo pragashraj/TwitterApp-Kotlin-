@@ -1,3 +1,9 @@
 package com.example.twitter
 
-data class Response(val message:String)
+class Response{
+    var byteArray:ByteArray?=null
+
+    constructor(byteArray: ByteArray){
+        this.byteArray=byteArray
+    }
+}

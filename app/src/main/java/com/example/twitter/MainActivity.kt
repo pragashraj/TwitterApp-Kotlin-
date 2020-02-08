@@ -1,6 +1,8 @@
 package com.example.twitter
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.text.Layout
 import android.view.*
@@ -25,8 +27,8 @@ class MainActivity : AppCompatActivity() {
     var listOfTweets=ArrayList<Tweet>()
     lateinit var listV:ListView
     var adapter:TweetAdapter?=null
-    lateinit var username:String
     lateinit var myPreference: MyPreference
+    var byteArray:ByteArray?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,15 +37,24 @@ class MainActivity : AppCompatActivity() {
         myPreference= MyPreference(this)
         userName=myPreference.getUserName()
 
-       /* listOfTweets.add(Tweet("","user1","First Tweet",""))
-        listOfTweets.add(Tweet("","user2","Second Tweet",""))
-        adapter=TweetAdapter(this,listOfTweets)
-        listV.adapter=adapter
-        */
+        try {
+            listOfTweets.add(Tweet(userName, "First1"))
+            listOfTweets.add(Tweet("kamal", "First1"))
+            listOfTweets.add(Tweet(userName, "First1"))
+            listOfTweets.add(Tweet("kamal", "First1"))
+            adapter = TweetAdapter(this, listOfTweets)
+            listV.adapter = adapter
+        }catch (e:Exception){
+            Toast.makeText(this,"excep",Toast.LENGTH_SHORT).show()
+        }
+
 
         fab.setOnClickListener { view ->
+            myDetails()
             var builder= AlertDialog.Builder(this)
             val dialogView=layoutInflater.inflate(R.layout.new_tweet,null)
+            dialogView.myName.text=userName
+            dialogView.myImage.setImageURI(Uri.parse(byteArray.toString()))
             builder.setView(dialogView)
 
             val dialog=builder.create()
@@ -52,6 +63,8 @@ class MainActivity : AppCompatActivity() {
                 myTweet=dialogView.myTweetText.text.toString()
                 if(myTweet.length>0)
                 {
+                    var tweet=Tweet(userName,myTweet)
+                    sendTweet(tweet)
                     dialog.cancel()
                 }else{
                     Toast.makeText(this,"No Tweets available",Toast.LENGTH_SHORT).show()
@@ -77,48 +90,43 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun myDetails()//Api
+    fun myDetails()
     {
-        ApiClient.instance.getMyDetails()
-            .enqueue(object : Callback<NewUser>{
-                override fun onFailure(call: Call<NewUser>, t: Throwable) {
+        try {
+            ApiClient.instance.getProfilePic("amal")
+                .enqueue(object : Callback<com.example.twitter.Response> {
+                    override fun onFailure(call: Call<com.example.twitter.Response>, t: Throwable) {
+                        Toast.makeText(this@MainActivity, t.message.toString(), Toast.LENGTH_SHORT).show()
+                    }
 
-                }
+                    override fun onResponse(call: Call<com.example.twitter.Response>, response: Response<com.example.twitter.Response>) {
+                        if (!response.isSuccessful) {
+                            Toast.makeText(this@MainActivity, response.code(), Toast.LENGTH_SHORT).show()
+                        } else {
+                            byteArray = response.body()!!.byteArray
+                        }
+                    }
 
-                override fun onResponse(call: Call<NewUser>, response: Response<NewUser>) {
-
-                }
-
-            })
+                })
+        }catch (e:Exception){
+            Toast.makeText(this@MainActivity, e.toString(), Toast.LENGTH_SHORT).show()
+        }
     }
-
-
-    fun sendMyTweet(tweetText:String)//Api
-    {
-        ApiClient.instance.saveTweet(userName,"",tweetText,"")
-            .enqueue(object:Callback<com.example.twitter.Response>{
-                override fun onFailure(call: Call<com.example.twitter.Response>, t: Throwable) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onResponse(call: Call<com.example.twitter.Response>, response: Response<com.example.twitter.Response>) {
-
-                }
-
-            })
-    }
-
 
     fun sendTweet(tweet: Tweet){
 
         ApiClient.instance.sendTweet(tweet)
-            .enqueue(object :Callback<Tweet>{
-                override fun onFailure(call: Call<Tweet>, t: Throwable) {
-
+            .enqueue(object :Callback<Void>{
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, t.message.toString(), Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onResponse(call: Call<Tweet>, response: Response<Tweet>) {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if(!response.isSuccessful){
+                        Toast.makeText(this@MainActivity, response.code(), Toast.LENGTH_SHORT).show()
+                    }else{
 
+                    }
                 }
 
             })
@@ -137,8 +145,11 @@ class MainActivity : AppCompatActivity() {
             var tweet=listOfTweets[p0]
             var inflater=context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE)as LayoutInflater
             var view=inflater.inflate(R.layout.tweet,null)
-            view.userName.text=tweet.uname
+            view.userName.text=tweet.username
             view.userTweetText.text=tweet.tweet
+            view.likeImage.setOnClickListener {
+                Toast.makeText(context,"liked",Toast.LENGTH_SHORT).show()
+            }
             return  view
         }
 

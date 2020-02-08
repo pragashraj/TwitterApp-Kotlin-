@@ -1,15 +1,11 @@
 package com.example.twitter
 
 class Tweet {
-        var image:String?=null
-        var uname:String?=null
+        var username:String?=null
         var tweet:String?=null
-        var attachment:String?=null
 
-    constructor(image: String?, uname: String?, tweet: String?, attachment: String?) {
-        this.image = image
-        this.uname = uname
+    constructor(username: String?, tweet: String?) {
+        this.username = username
         this.tweet = tweet
-        this.attachment = attachment
     }
 }
