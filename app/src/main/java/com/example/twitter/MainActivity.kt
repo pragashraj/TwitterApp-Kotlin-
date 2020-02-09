@@ -1,6 +1,8 @@
 package com.example.twitter
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -19,6 +21,7 @@ import kotlinx.android.synthetic.main.tweet.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,7 +31,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var listV:ListView
     var adapter:TweetAdapter?=null
     lateinit var myPreference: MyPreference
-    var byteArray:ByteArray?=null
+    var liked=false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,80 +41,51 @@ class MainActivity : AppCompatActivity() {
         myPreference= MyPreference(this)
         userName=myPreference.getUserName()
 
-        try {
-            listOfTweets.add(Tweet(userName, "First1"))
-            listOfTweets.add(Tweet("kamal", "First1"))
-            listOfTweets.add(Tweet(userName, "First1"))
-            listOfTweets.add(Tweet("kamal", "First1"))
-            adapter = TweetAdapter(this, listOfTweets)
-            listV.adapter = adapter
-        }catch (e:Exception){
-            Toast.makeText(this,"excep",Toast.LENGTH_SHORT).show()
-        }
+            fab.setOnClickListener { view ->
+                var builder = AlertDialog.Builder(this)
+                val dialogView = layoutInflater.inflate(R.layout.new_tweet, null)
+                dialogView.myName.text = userName
+                builder.setView(dialogView)
 
+                val dialog = builder.create()
+                dialog.show()
+                dialogView.send.setOnClickListener {
+                    myTweet = dialogView.myTweetText.text.toString()
+                    if (myTweet.length > 0) {
+                        var tweet = Tweet(userName, myTweet)
+                        sendTweet(tweet)
+                        dialog.cancel()
+                        listOfTweets.clear()
+                        getTweet()
+                    } else {
+                        Toast.makeText(this, "No Tweets available", Toast.LENGTH_SHORT).show()
+                    }
 
-        fab.setOnClickListener { view ->
-            myDetails()
-            var builder= AlertDialog.Builder(this)
-            val dialogView=layoutInflater.inflate(R.layout.new_tweet,null)
-            dialogView.myName.text=userName
-            dialogView.myImage.setImageURI(Uri.parse(byteArray.toString()))
-            builder.setView(dialogView)
-
-            val dialog=builder.create()
-            dialog.show()
-            dialogView.send.setOnClickListener {
-                myTweet=dialogView.myTweetText.text.toString()
-                if(myTweet.length>0)
-                {
-                    var tweet=Tweet(userName,myTweet)
-                    sendTweet(tweet)
-                    dialog.cancel()
-                }else{
-                    Toast.makeText(this,"No Tweets available",Toast.LENGTH_SHORT).show()
+                }
+                dialogView.attachment.setOnClickListener {
+                    Toast.makeText(this, "attachment btn", Toast.LENGTH_SHORT).show()
                 }
 
             }
-            dialogView.attachment.setOnClickListener {
-                Toast.makeText(this,"attachment btn",Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
+    override fun onStart() {
+        super.onStart()
+        getTweet()
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        when(item.itemId){
+            R.id.Profile->{
+                var intent =Intent(this,ProfileActivity::class.java)
+                startActivity(intent)
+            }
         }
-    }
-
-
-    fun myDetails()
-    {
-        try {
-            ApiClient.instance.getProfilePic("amal")
-                .enqueue(object : Callback<com.example.twitter.Response> {
-                    override fun onFailure(call: Call<com.example.twitter.Response>, t: Throwable) {
-                        Toast.makeText(this@MainActivity, t.message.toString(), Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onResponse(call: Call<com.example.twitter.Response>, response: Response<com.example.twitter.Response>) {
-                        if (!response.isSuccessful) {
-                            Toast.makeText(this@MainActivity, response.code(), Toast.LENGTH_SHORT).show()
-                        } else {
-                            byteArray = response.body()!!.byteArray
-                        }
-                    }
-
-                })
-        }catch (e:Exception){
-            Toast.makeText(this@MainActivity, e.toString(), Toast.LENGTH_SHORT).show()
-        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun sendTweet(tweet: Tweet){
@@ -133,13 +108,37 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun getTweet(){
+        ApiClient.instance.getAllTweet()
+            .enqueue(object :Callback<List<Tweet>>{
+                override fun onFailure(call: Call<List<Tweet>>, t: Throwable) {
+                    Toast.makeText(this@MainActivity,"failed to Load:Check Your Connection!!!",Toast.LENGTH_LONG).show()
+                }
+
+                override fun onResponse(call: Call<List<Tweet>>, response: Response<List<Tweet>>) {
+                    if(!response.isSuccessful){
+                        Toast.makeText(this@MainActivity,"responsed wrongly by getTweet",Toast.LENGTH_SHORT).show()
+                    }else{
+                        var list_Tweet=response.body()
+                        for ( i in 0..list_Tweet!!.size-1){
+                            listOfTweets.add(list_Tweet[i])
+                        }
+                        adapter = TweetAdapter(this@MainActivity, listOfTweets,liked)
+                        listV.adapter = adapter
+                    }
+                }
+
+            })
+    }
 
     class TweetAdapter: BaseAdapter {
         var listOfTweets=ArrayList<Tweet>()
         var context:Context?=null
-        constructor(context:Context, listOfTweets :ArrayList<Tweet>):super(){
+        var liked:Boolean?=null
+        constructor(context:Context, listOfTweets :ArrayList<Tweet>,liked:Boolean):super(){
             this.context=context
             this.listOfTweets=listOfTweets
+            this.liked=liked
         }
         override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
             var tweet=listOfTweets[p0]
@@ -148,7 +147,13 @@ class MainActivity : AppCompatActivity() {
             view.userName.text=tweet.username
             view.userTweetText.text=tweet.tweet
             view.likeImage.setOnClickListener {
-                Toast.makeText(context,"liked",Toast.LENGTH_SHORT).show()
+                if(liked as Boolean) {
+                    view.likeImage.setImageResource(R.drawable.heart)
+                    liked=false
+                }else{
+                    view.likeImage.setImageResource(R.drawable.heartred)
+                    liked=true
+                }
             }
             return  view
         }
@@ -165,6 +170,15 @@ class MainActivity : AppCompatActivity() {
             return listOfTweets.size
         }
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        startActivity(intent)
+        val pid = android.os.Process.myPid()
+        android.os.Process.killProcess(pid)
     }
 
 }

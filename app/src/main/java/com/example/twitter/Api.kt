@@ -13,11 +13,8 @@ interface Api {
     @POST("postImage")
     fun sendImage(@Part filePart: MultipartBody.Part, @Part("name") name: String):Call<Void>
 
-    @GET("getPicture")
-    fun getProfilePic(@Query("name")username: String):Call<Response>
-
-    @GET("getDetails")
-    fun getMyDetails():Call<NewUser>
+    @GET("getTweet")
+    fun getAllTweet():Call<List<Tweet>>
 
     @POST("posttweet")
     fun sendTweet(@Body tweet: Tweet):Call<Void>

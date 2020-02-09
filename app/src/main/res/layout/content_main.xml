@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main"
-    android:background="#fff">
-
+    android:background="@drawable/back"
+    android:orientation="vertical">
 
     <ListView
         android:id="@+id/listView"
@@ -17,8 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="80dp">
-
+        android:layout_marginTop="150dp">
     </ListView>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.twitter
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,17 +21,16 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var email:String
     lateinit var password:String
     lateinit var myPreference: MyPreference
-    var ISLOGGED:Boolean?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         email_editText=findViewById(R.id.emailEt)as EditText
         password_editText=findViewById(R.id.passwordEt)as EditText
         myPreference= MyPreference(this)
-        ISLOGGED=myPreference.getIsLogged()
+        var ISLOGGED=myPreference.getIsLogged()
 
-        if(ISLOGGED as Boolean){
-            var intent=Intent(this,MainActivity::class.java)
+        if(ISLOGGED){
+            var intent= Intent(this,MainActivity::class.java)
             startActivity(intent)
         }
     }
@@ -75,7 +75,4 @@ class SignUpActivity : AppCompatActivity() {
         intent.putExtra("username",splitEmail(email))
         startActivity(intent)
     }
-
-
-
 }

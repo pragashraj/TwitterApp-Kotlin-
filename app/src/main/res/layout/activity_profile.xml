@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#fff"
+        android:elevation="6dp">
+
+        <TextView
+            android:id="@+id/NametxtValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name Value"
+            android:textColor="#111"
+            android:textSize="18dp"
+            android:layout_gravity="center|left"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="50dp"
+            />
+        <TextView
+            android:id="@+id/EmailtxtValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email Value"
+            android:textColor="#111"
+            android:textSize="18dp"
+            android:layout_gravity="center|left"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="100dp"
+            />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My Profile"
+            android:textColor="#111"
+            android:textSize="22dp"
+            android:layout_marginTop="200dp"
+            android:layout_gravity="center|top"/>
+
+
+        <TextView
+            android:id="@+id/Nametxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:layout_marginLeft="28dp"
+            android:text="Name :"
+            android:textColor="#111"
+            android:textSize="18dp"
+            android:layout_marginTop="50dp"/>
+
+        <TextView
+            android:id="@+id/Emailtxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="100dp"
+            android:text="Email  :"
+            android:textColor="#111"
+            android:textSize="18dp" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="190dp"
+            android:layout_height="200dp"
+            app:srcCompat="@drawable/profile"
+            android:layout_gravity="center|top"/>
+
+        <ImageView
+            android:id="@+id/homeBtn"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            app:srcCompat="@drawable/homebtn"
+            android:layout_gravity="center|bottom"
+            android:tooltipText="Go Back"
+            android:layout_marginTop="380dp"/>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
